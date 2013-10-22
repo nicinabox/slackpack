@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+
+import os
+import json
+import shutil
+import argparse
+
+__version__ = '0.1.0'
+__config__  = '.slackpack'
+
+def _parse_config(args):
+  target_config = args.directory + '/' + args.config
+  f = open(target_config)
+  config = json.load(f)
+  config['ignore'].append(args.config)
+
+  return dict(config.items() + vars(args).items())
+
+def _tmp_dir(config):
+  tmp_dir = '{0}-{1}-{2}-{3}'.format(config['name'],
+                                     config['version'],
+                                     config['arch'],
+                                     config['build'])
+  return tmp_dir
+
+def _copy_files_to_tmp_dir(tmp_dir, config):
+  shutil.copytree(config['directory'], tmp_dir,
+                  ignore=lambda d, files: [f for f in files if f in config['ignore']])
+
+def _prefix_files(tmp_dir, config):
+  for prefix in config['prefix']:
+    srcs = config['prefix'][prefix]
+    dest = tmp_dir + '/' + prefix
+
+    if not os.path.exists(dest): os.makedirs(dest)
+
+    for src in srcs:
+      print(src, dest)
+      shutil.move(src, dest)
+
+def _cleanup(tmp_dir):
+  # remove tmp_dir
+  pass
+
+def pack(args):
+  config  = _parse_config(args)
+  tmp_dir = _tmp_dir(config)
+  _copy_files_to_tmp_dir(tmp_dir, config)
+  _prefix_files(tmp_dir, config)
+  _cleanup(tmp_dir)
+
+def main():
+  arger = argparse.ArgumentParser(description="")
+
+  arger.add_argument('directory')
+
+  arger.add_argument('-v', '--version', help="target version")
+  arger.add_argument('-a', '--arch', help="target architecture", default="noarch")
+  arger.add_argument('-b', '--build', help="target build", default="unRAID")
+
+  # Parse
+  args = arger.parse_args()
+
+  if not args.version:
+    exit('You must specify a target version.')
+
+  args.config = __config__
+  args.directory = os.path.dirname(os.path.abspath(args.directory + '/' + args.config))
+
+  pack(args)
+
+if __name__ == '__main__': main()
