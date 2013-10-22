@@ -5,14 +5,20 @@ import json
 import shutil
 import argparse
 
-__version__ = '0.1.0'
-__config__  = '.slackpack'
+__version__  = '0.1.0'
+__config__   = '.slackpack'
+__defaults__ = {
+  "always_ignore": __config__
+}
 
 def _parse_config(args):
   target_config = args.directory + '/' + args.config
   f = open(target_config)
   config = json.load(f)
-  config['ignore'].append(args.config)
+
+  # Merge defaults
+  config = dict(__defaults__.items() + config.items())
+  config['ignore'] += config['always_ignore']
 
   return dict(config.items() + vars(args).items())
 
@@ -35,18 +41,24 @@ def _prefix_files(tmp_dir, config):
     if not os.path.exists(dest): os.makedirs(dest)
 
     for src in srcs:
-      print(src, dest)
-      shutil.move(src, dest)
+      full_src = tmp_dir + '/' + src
+      shutil.move(full_src, dest)
+
+def _gzip(tmp_dir):
+  shutil.make_archive(tmp_dir, 'gztar', tmp_dir)
+  shutil.move(tmp_dir + '.tar.gz', tmp_dir + '.tgz')
 
 def _cleanup(tmp_dir):
-  # remove tmp_dir
+  shutil.rmtree(tmp_dir)
   pass
 
 def pack(args):
   config  = _parse_config(args)
   tmp_dir = _tmp_dir(config)
+
   _copy_files_to_tmp_dir(tmp_dir, config)
   _prefix_files(tmp_dir, config)
+  _gzip(tmp_dir)
   _cleanup(tmp_dir)
 
 def main():
