@@ -8,7 +8,7 @@ import argparse
 __version__  = '0.1.0'
 __config__   = '.slackpack'
 __defaults__ = {
-  "always_ignore": __config__
+  "always_ignore": [__config__, '.git', '.DS_Store']
 }
 
 def _parse_config(args):
@@ -50,7 +50,6 @@ def _gzip(tmp_dir):
 
 def _cleanup(tmp_dir):
   shutil.rmtree(tmp_dir)
-  pass
 
 def pack(args):
   config  = _parse_config(args)
