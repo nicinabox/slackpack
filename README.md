@@ -27,6 +27,10 @@ Run `slackpack -h` to view all options.
 
 Currently targeting OSX and Linux. Windows probably works.
 
+## Known Issues
+
+* makepkg uses tar-1.13 to archive directories. Newer tar versions don't create quite the same output, leading installpkg to believe it wasn't made with makepkg, even though the same tar command is used.
+
 ## License
 
 MIT. See LICENSE.txt for details.
