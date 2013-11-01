@@ -23,6 +23,25 @@ Probably clone the repo and run `bin/slackpack` directly. No installer/distribut
 
 Run `slackpack -h` to view all options.
 
+## .slackpack example
+
+.slackpack is a json configuration.
+
+    {
+      "name": "trolley",  // required
+      "arch": "noarch",   // optional, defaults to 'noarch'
+      "build": "unraid",  // optional, defaults to 'unraid'
+
+      // required, ignored files will be excluded from the final package
+      "ignore": ["install.sh", ".gitignore", "packages.json"],
+
+      // optional, define directory mappings
+      "prefix": {
+        "usr/local": ["bin"],
+        "usr/docs/trolley": ["README.md", "LICENSE.txt"]
+      }
+    }
+
 ## Platform Support
 
 Currently targeting OSX and Linux. Windows probably works.
