@@ -20,7 +20,7 @@ def _parse_config(args):
   config = dict(__defaults__.items() + config.items())
   config['ignore'] += config['always_ignore']
 
-  return dict(config.items() + vars(args).items())
+  return dict(vars(args).items() + config.items())
 
 def _tmp_dir(config):
   tmp_dir = '{0}-{1}-{2}-{3}'.format(config['name'],
