@@ -4,11 +4,13 @@ import os
 import json
 import shutil
 import argparse
+import shlex
+import subprocess
 
 __version__  = '0.1.0'
 __config__   = '.slackpack'
 __defaults__ = {
-  "always_ignore": [__config__, '.git', '.DS_Store']
+  "always_ignore": [__config__, '.git', '.DS_Store', '*.log']
 }
 
 def _parse_config(args):
@@ -30,6 +32,7 @@ def _tmp_dir(config):
   return tmp_dir
 
 def _copy_files_to_tmp_dir(tmp_dir, config):
+  # TODO: Support nested folder patterns
   shutil.copytree(config['directory'], tmp_dir,
                   ignore=shutil.ignore_patterns(*config['ignore'])
                   )
@@ -52,14 +55,23 @@ def _gzip(tmp_dir):
 def _cleanup(tmp_dir):
   shutil.rmtree(tmp_dir)
 
+def _run_tasks(tmp_dir, config):
+  if 'tasks' in config:
+    for task in config['tasks']:
+      print("Running: " + task)
+      subprocess.call(shlex.split(task))
+
 def pack(args):
   config  = _parse_config(args)
   tmp_dir = _tmp_dir(config)
 
+  _run_tasks(tmp_dir, config)
   _copy_files_to_tmp_dir(tmp_dir, config)
   _prefix_files(tmp_dir, config)
   _gzip(tmp_dir)
   _cleanup(tmp_dir)
+
+  print("Packed " + config['name'] + " " + config['version'])
 
 def main():
   arger = argparse.ArgumentParser(description="")
