@@ -31,7 +31,8 @@ def _tmp_dir(config):
 
 def _copy_files_to_tmp_dir(tmp_dir, config):
   shutil.copytree(config['directory'], tmp_dir,
-                  ignore=lambda d, files: [f for f in files if f in config['ignore']])
+                  ignore=shutil.ignore_patterns(*config['ignore'])
+                  )
 
 def _prefix_files(tmp_dir, config):
   for prefix in config['prefix']:
@@ -67,7 +68,7 @@ def main():
 
   arger.add_argument('-v', '--version', help="target version")
   arger.add_argument('-a', '--arch', help="target architecture", default="noarch")
-  arger.add_argument('-b', '--build', help="target build", default="unRAID")
+  arger.add_argument('-b', '--build', help="target build", default="unraid")
 
   # Parse
   args = arger.parse_args()
