@@ -29,6 +29,7 @@ Run `slackpack -h` to view all options.
 
     {
       "name": "trolley",  // required
+      "version": "unraid", // required
       "arch": "noarch",   // optional, defaults to 'noarch'
       "build": "unraid",  // optional, defaults to 'unraid'
 
