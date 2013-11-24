@@ -65,6 +65,9 @@ def pack(args):
   config  = _parse_config(args)
   tmp_dir = _tmp_dir(config)
 
+  if not config['version']:
+    exit('You must specify a target version.')
+
   _run_tasks(tmp_dir, config)
   _copy_files_to_tmp_dir(tmp_dir, config)
   _prefix_files(tmp_dir, config)
@@ -84,9 +87,6 @@ def main():
 
   # Parse
   args = arger.parse_args()
-
-  if not args.version:
-    exit('You must specify a target version.')
 
   args.config = __config__
   args.directory = os.path.dirname(os.path.abspath(args.directory + '/' + args.config))
