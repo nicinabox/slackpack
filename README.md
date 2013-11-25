@@ -19,9 +19,9 @@ Probably clone the repo and run `bin/slackpack` directly. No installer/distribut
 ## Usage
 
 1. Add a `.slackpack` file to your project
-2. Run `slackpack DIRECTORY -v VERSION` where DIRECTORY is the directory you want to package and VERSION is the target version number.
+2. Run `slackpack DIRECTORY` where DIRECTORY is the directory you want to package.
 
-Run `slackpack -h` to view all options.
+Run `slackpack -h` to view all options. Check [trolley](https://github.com/nicinabox/trolley/blob/master/.slackpack) for a working slackpack example.
 
 ## .slackpack example
 
